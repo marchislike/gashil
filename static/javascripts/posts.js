@@ -34,16 +34,28 @@ const spreadFilters = () => {
 };
 
 const getDateTime = () => {
+  const cal = document.getElementById('datepicker-autohide');
   const time = document.getElementById('time');
 
   const date = new Date();
-  const hour = date.getHours();
-  const min = date.getMinutes();
+  let hour = date.getHours();
+  let min = date.getMinutes();
+  if (hour < 10) hour = `0${hour}`;
+  if (min < 10) min = `0${min}`;
 
   time.setAttribute('value', `${hour}:${min}`);
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  getDateTime();
+  flatpickr('#datetimepicker', {
+    enableTime: true,
+    locale: 'ko',
+    dateFormat: `Y년 m월 d일 (D) H:i`,
+    defaultDate: new Date(), // Set default date to current date and time
+    onChange: function (selectedDates, dateStr, instance) {
+      console.log('Selected date: ', dateStr);
+    },
+  });
+
   spreadFilters();
 });
