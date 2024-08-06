@@ -22,7 +22,6 @@ def create_app():
         client = MongoClient(app.config["MONGO_URI"])
         app.db = client[app.config["DB_NAME"]]
     except errors.ServerSelectionTimeoutError as err:
-        print(f"MongoDB connection error: {err}")
         app.db = None
 
     @app.route('/')
@@ -73,15 +72,12 @@ def create_app():
                 raise errors.ServerSelectionTimeoutError("Database not connected")
             data = request.get_json()
             update_fields = {k: v for k, v in data.items() if k != '_id'}
-            print(f"Updating post {post_id} with {update_fields}")  # 디버깅 메시지 추가
             result = app.db.posts.update_one({'_id': ObjectId(post_id)}, {'$set': update_fields})
-            print(f"Update result: {result.raw_result}")  # 디버깅 메시지 추가
             if result.matched_count:
                 return jsonify({"message": "게시글이 수정되었습니다."}), 200
             else:
                 return jsonify({"error": "Post not found"}), 404
         except Exception as e:
-            print(f"Error in update_post: {e}")
             return jsonify({"error": str(e)}), 500
 
     @app.route('/posts/<post_id>', methods=['DELETE'])
@@ -95,7 +91,6 @@ def create_app():
             else:
                 return jsonify({"error": "Post not found"}), 404
         except Exception as e:
-            print(f"Error: {e}")
             return jsonify({"error": str(e)}), 500
 
     return app
