@@ -16,7 +16,7 @@ def create_app():
         app.db = client[app.config["DB_NAME"]]
     except errors.ServerSelectionTimeoutError as err:
         app.db = None
-        
+
     def check_db_connection(db_check):
         @wraps(db_check)
         def decorated_function(*args, **kwargs): #kwargs: keyword 인자
@@ -27,8 +27,7 @@ def create_app():
 
     @app.route('/')
     def home():
-        return render_template('index.html')
-    
+        return render_template('./pages/login.html')
 
     @app.route('/posts', methods=['GET'])
     @check_db_connection
