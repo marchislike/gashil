@@ -12,7 +12,8 @@ include './header/backHeader.html' with context %}
         class="flex flex-row items-center justify-between w-full h-[56px] px-4 rounded-md border-2 border-gray-200"
       >
         <input
-          aria-label="id"
+          id="username"
+          aria-label="username"
           placeholder="아이디 입력"
           type="text"
           class="outline-none placeholder:text-gray-400 placeholder:font-normal min-w-[230px] font-semibold"
@@ -43,16 +44,17 @@ include './header/backHeader.html' with context %}
       >
       <!-- nickname input -->
       {% set placeholder = "닉네임 입력" %}{% set input_type = "text" %}{% set
-      input_name = "nickname" %}{% set aria_label = "nickname" %} {% include
-      './components/input.html' with context %}
+      input_name = "nickname" %}{% set input_id = "nickname" %}{% set aria_label
+      = "nickname" %} {% include './components/input.html' with context %}
       <small class="-mt-[18px] ml-2 text-gray-600"
         >가급적 본명을 사용해주세요.</small
       >
     </div>
   </div>
   <button
+    id="request_join_btn"
     type="submit"
-    class="w-full h-[56px] text-white rounded-lg font-bold text-Body-1 bg-Primary"
+    class="w-full h-[56px] text-white rounded-lg font-bold text-Body-1 bg-Low"
   >
     가입하기
   </button>
