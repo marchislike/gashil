@@ -1,9 +1,6 @@
-from flask import Flask, render_template, request, jsonify
-from pymongo import MongoClient
-client = MongoClient('mongodb+srv://kimwatson2026:HjvFSFwKAWPehGmd@gashil.yhejgv0.mongodb.net/?retryWrites=true&w=majority&appName=Gashil')
-db = client.gashil
-app = Flask(__name__)
+from app import create_app
 
-@app.route('/')
-def home():
-   return render_template('index.html')
+app = create_app()
+
+if __name__ == '__main__':
+    app.run(debug=True)
