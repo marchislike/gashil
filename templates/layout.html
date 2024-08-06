@@ -34,10 +34,8 @@
     <main
       class="bg-white w-full max-w-[490px] min-h-[100vh] px-4 flex flex-col"
     >
-      <div class="h-full w-full"></div>
-      {% if header_type == 'title' %} {% include './header/titleHeader.html' %}
-      {% elif header_type == 'back' %} {% include './header/backHeader.html' %}
-      {% endif %} {% block content %}{% endblock %}
+      {% block content %}{% endblock %}
     </main>
+    <script src="{{ url_for('static', filename='javascripts/member.js') }}"></script>
   </body>
 </html>
