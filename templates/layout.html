@@ -24,6 +24,7 @@
             colors: {
               Primary: '#53E4C1',
               Low: '#D3F8EF',
+              Strong: '#1CB591',
             },
           },
         },
@@ -37,6 +38,10 @@
     >
       {% block content %}{% endblock %}
     </main>
+    <!-- {% if script_required %}
+    <script src="{{ url_for('static', filename=script_file) }}"></script>
+    {% endif %} -->
     <script src="{{ url_for('static', filename='javascripts/member.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/posts.js') }}"></script>
   </body>
 </html>
