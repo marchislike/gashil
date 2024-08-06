@@ -1,7 +1,7 @@
 {% extends 'layout.html' %} {% block content %} {% include
 './header/mainHeader.html' with context %}
 <ul class="flex flex-row gap-[10px] overflow-auto my-6 mx-2" id="filters"></ul>
-<ul class="flex flex-col mx-2 mt-[38px] gap-[20px] h-[82vh] overflow-auto">
+<ul class="flex flex-col mx-2 mt-[38px] gap-[20px] h-[78vh] overflow-auto">
   <li class="flex flex-col gap-[8px] border-b-[1px] pb-4">
     <div class="flex justify-between items-center w-full">
       <div class="flex gap-10 items-center w-2/3 font-semibold text-[18px]">
@@ -125,5 +125,14 @@
     </div>
   </li>
 </ul>
+<div class="sticky bottom-12 ml-auto mr-4">
+  <a
+    aria-label="new-post-button"
+    class="w-[60px] h-[60px] rounded-full bg-Primary flex items-center justify-center shadow-lg"
+    href="/new"
+  >
+    <i class="fa-solid fa-plus text-[24px] text-white"></i>
+  </a>
+</div>
 {% endblock %}{% block script %} {% set script_required = true %} {% set
 script_file = 'javascripts/posts.js' %} {% endblock %}
