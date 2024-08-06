@@ -1,10 +1,10 @@
 const handleFilterClick = (li) => {
-  if (li.classList.contains('bg-Low text-Primary')) {
-    li.classList.remove('bg-Low text-Primary');
-    li.classList.add('bg-Primary text-white');
+  if (li.classList.contains('bg-gray-100')) {
+    li.classList.remove('bg-gray-100', 'text-gray-400');
+    li.classList.add('bg-Low', 'text-Strong');
   } else {
-    li.classList.remove('bg-Primary text-white');
-    li.classList.add('bg-Low text-Primary');
+    li.classList.remove('bg-Low', 'text-Strong');
+    li.classList.add('bg-gray-100', 'text-gray-400');
   }
 };
 
@@ -25,13 +25,14 @@ const spreadFilters = () => {
       >
         ${filter}
       </li>`;
+
     ul.insertAdjacentHTML('beforeend', list);
+  });
+  ul.addEventListener('click', (event) => {
+    if (event.target.tagName === 'LI') handleFilterClick(event.target);
   });
 };
 
 document.addEventListener('DOMContentLoaded', () => {
   spreadFilters();
-  document.getElementById('filters').addEventListener('click', (event) => {
-    if (event.target.tagName === 'li') handleFilterClick(e.target);
-  });
 });
