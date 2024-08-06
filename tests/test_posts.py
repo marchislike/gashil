@@ -68,7 +68,6 @@ def test_update_post(client):
     assert response.get_json()['message'] == '게시글이 수정되었습니다.'
 
     response = client.get(f'/posts/{post_id}')
-    print(response.data)  # 디버그 출력 추가
     updated_post = response.get_json()
     assert updated_post is not None
     assert updated_post['arrival'] == '대전역'
@@ -92,5 +91,4 @@ def test_delete_post(client):
     assert response.get_json()['message'] == '게시글이 삭제되었습니다.'
 
     response = client.get(f'/posts/{post_id}')
-    print(response.data)  # 디버그 출력 추가
     assert response.status_code == 404
