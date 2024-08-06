@@ -3,6 +3,8 @@ from pymongo import MongoClient, errors
 from bson.objectid import ObjectId
 import os
 
+from functools import wraps #*데코레이터로 DB connection check
+
 def convert_objectid_to_str(data):
     if isinstance(data, list):
         return [convert_objectid_to_str(item) for item in data]
@@ -23,12 +25,22 @@ def create_app():
         app.db = client[app.config["DB_NAME"]]
     except errors.ServerSelectionTimeoutError as err:
         app.db = None
+        
+    def check_db_connection(db_check):
+        @wraps(db_check)
+        def decorated_function(*args, **kwargs): #kwargs: keyword 인자
+            if app.db is None:
+                return jsonify({"error": "DB 연결이 되어있지 않습니다."}), 500
+            return db_check(*args, **kwargs)
+        return decorated_function
 
     @app.route('/')
     def home():
         return render_template('index.html')
+    
 
     @app.route('/posts', methods=['GET'])
+    @check_db_connection
     def get_posts():
         try:
             posts = list(app.db.posts.find())
@@ -36,8 +48,23 @@ def create_app():
             return jsonify(posts), 200
         except Exception as e:
             return jsonify({"error": str(e)}), 500
+        
+    @app.route('/posts/<post_id>', methods=['GET'])
+    @check_db_connection
+    def get_post(post_id):
+        try:
+            post = app.db.posts.find_one({'_id': ObjectId(post_id)})
+            if post:
+                post = convert_objectid_to_str(post)
+                return jsonify(post), 200
+            else:
+                return jsonify({"error": "게시글을 찾을 수 없습니다."}), 404
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+        
 
     @app.route('/posts', methods=['POST'])
+    @check_db_connection
     def create_post():
         try:
             data = request.get_json()
@@ -53,44 +80,37 @@ def create_app():
                 "participants": [user_id]
             }
             result = app.db.posts.insert_one(post)
-            return jsonify({"message": "파티원 모집글이 성공적으로 등록되었습니다.", "_id": str(result.inserted_id)}), 201
+            return jsonify({"message": "게시글이 등록되었습니다.", "_id": str(result.inserted_id)}), 201
         except Exception as e:
             return jsonify({"error": str(e)}), 500
-
-    #참석 여부 -- 
-    
-    
-    
-    
     
     #등록자 수정, 삭제
 
     @app.route('/posts/<post_id>', methods=['PUT'])
+    @check_db_connection
     def update_post(post_id):
         try:
-            if app.db is None:
-                raise errors.ServerSelectionTimeoutError("Database not connected")
             data = request.get_json()
-            update_fields = {k: v for k, v in data.items() if k != '_id'}
+            update_fields = {key: value for key, value in data.items() if key != '_id'}
             result = app.db.posts.update_one({'_id': ObjectId(post_id)}, {'$set': update_fields})
             if result.matched_count:
                 return jsonify({"message": "게시글이 수정되었습니다."}), 200
             else:
-                return jsonify({"error": "Post not found"}), 404
+                return jsonify({"error": "게시글을 찾을 수 없습니다."}), 404
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
     @app.route('/posts/<post_id>', methods=['DELETE'])
+    @check_db_connection
     def delete_post(post_id):
         try:
-            if app.db is None:
-                raise errors.ServerSelectionTimeoutError("Database not connected")
             result = app.db.posts.delete_one({'_id': ObjectId(post_id)})
             if result.deleted_count:
-                return jsonify({"message": "게시글이 성공적으로 삭제되었습니다."}), 200
+                return jsonify({"message": "게시글이 삭제되었습니다."}), 200
             else:
-                return jsonify({"error": "Post not found"}), 404
+                return jsonify({"error": "게시글을 찾을 수 없습니다."}), 404
         except Exception as e:
             return jsonify({"error": str(e)}), 500
+
 
     return app
