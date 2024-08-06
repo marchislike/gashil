@@ -1,4 +1,4 @@
-function validateForm() {
+function validateJoinForm() {
   const password = document.getElementById('password').value;
   const confirmPassword = document.getElementById('password_confirm').value;
   const username = document.getElementById('username').value;
@@ -25,6 +25,30 @@ function validateForm() {
   }
 }
 
+function validateLoginForm() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  const requestBtn = document.getElementById('request_login_btn');
+
+  if (username && password) {
+    requestBtn.removeAttribute('disabled');
+    requestBtn.classList.remove('bg-Low');
+    requestBtn.classList.add('bg-Primary');
+  } else {
+    requestBtn.setAttribute('disabled', true);
+    requestBtn.classList.remove('bg-Primary');
+    requestBtn.classList.add('bg-Low');
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('joinForm').addEventListener('input', validateForm);
+  document
+    .getElementById('join_form')
+    .addEventListener('input', validateJoinForm);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  document
+    .getElementById('login_form')
+    .addEventListener('input', validateLoginForm);
 });

@@ -5,22 +5,24 @@
       <h1 class="text-[26px] text-Primary font-bold">GASHIL</h1>
       <h2 class="text-[22px] font-bold">함께 타는 카풀 택시</h2>
     </div>
-    <form class="w-full flex flex-col gap-[20px] mt-[48px]">
+    <form class="w-full flex flex-col gap-[20px] mt-[48px]" id="login_form">
       {% set placeholder = "아이디 입력" %} {% set input_type = "text" %}{% set
-      input_name = "username" %}{% set aria_label = "id" %} {% include
-      './components/input.html' with context %}
+      input_name = "username" %}{% set input_id = "username" %}{% set aria_label
+      = "username" %} {% include './components/input.html' with context %}
       <div class="flex flex-col">
         {% set placeholder = "비밀번호 입력" %}{% set input_type = "password"
-        %}{% set input_name = "password" %}{% set aria_label = "password" %} {%
-        include './components/input.html' with context %}
+        %}{% set input_name = "password" %}{% set input_id = "password" %}{% set
+        aria_label = "password" %} {% include './components/input.html' with
+        context %}
         <small class="mt-1 ml-2 text-red-600"
           >아이디나 비밀번호가 올바르지 않습니다.</small
         >
       </div>
       <div class="mt-[28px]">
         <button
+          id="request_login_btn"
           type="submit"
-          class="w-full h-[56px] text-white rounded-lg font-bold text-Body-1 bg-Primary"
+          class="w-full h-[56px] text-white rounded-lg font-bold text-Body-1 bg-Low"
         >
           로그인하기
         </button>
