@@ -1,0 +1,41 @@
+{% extends 'layout.html' %} {% block content %}
+<section class="h-[100vh] flex flex-col justify-between">
+  <div>
+    <div class="flex flex-col mt-[60px]">
+      <h1 class="text-[26px] text-Primary font-bold">GASHIL</h1>
+      <h2 class="text-[22px] font-bold">함께 타는 카풀 택시</h2>
+    </div>
+    <form class="w-full flex flex-col gap-[20px] mt-[48px]" id="login_form">
+      {% set placeholder = "아이디 입력" %} {% set input_type = "text" %}{% set
+      input_name = "user_id" %}{% set input_id = "user_id" %}{% set aria_label =
+      "user_id" %} {% include './components/input.html' with context %}
+      <div class="flex flex-col">
+        {% set placeholder = "비밀번호 입력" %}{% set input_type = "password"
+        %}{% set input_name = "password" %}{% set input_id = "password" %}{% set
+        aria_label = "password" %} {% include './components/input.html' with
+        context %}
+        <small class="mt-1 ml-2 text-red-600" style="display: none"
+          >아이디나 비밀번호가 올바르지 않습니다.</small
+        >
+      </div>
+      <div class="mt-[28px]">
+        <button
+          id="request_login_btn"
+          type="submit"
+          class="w-full h-[56px] text-white rounded-lg font-bold text-Body-1 bg-Low"
+        >
+          로그인하기
+        </button>
+      </div>
+    </form>
+  </div>
+  <div
+    class="w-full flex flex-row justify-center items-center gap-[10px] text-[14px] text-center mb-8"
+  >
+    <span class="text-gray-400">아이디가 없나요?</span>
+    <a href="/join" class="text-Primary font-bold underline underline-offset-4">
+      가입하기
+    </a>
+  </div>
+</section>
+{% endblock %}
