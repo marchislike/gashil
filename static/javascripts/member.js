@@ -1,7 +1,7 @@
 function validateJoinForm() {
   const password = document.getElementById('password').value;
   const confirmPassword = document.getElementById('password_confirm').value;
-  const username = document.getElementById('username').value;
+  const user_id = document.getElementById('user_id').value;
   const nickname = document.getElementById('nickname').value;
   const warningText = document.getElementById('password_error');
   const requestBtn = document.getElementById('request_join_btn');
@@ -15,7 +15,7 @@ function validateJoinForm() {
     warningText.style.display = 'none';
     requestBtn.removeAttribute('disabled');
 
-    if (username && nickname) {
+    if (user_id && nickname) {
       requestBtn.classList.remove('bg-Low');
       requestBtn.classList.add('bg-Primary');
     } else {
@@ -26,11 +26,11 @@ function validateJoinForm() {
 }
 
 function validateLoginForm() {
-  const username = document.getElementById('username').value;
+  const user_id = document.getElementById('user_id').value;
   const password = document.getElementById('password').value;
   const requestBtn = document.getElementById('request_login_btn');
 
-  if (username && password) {
+  if (user_id && password) {
     requestBtn.removeAttribute('disabled');
     requestBtn.classList.remove('bg-Low');
     requestBtn.classList.add('bg-Primary');
