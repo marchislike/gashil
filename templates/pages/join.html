@@ -27,13 +27,18 @@ include './header/backHeader.html' with context %}
 
       <!-- ps input -->
       {% set placeholder = "비밀번호 입력" %}{% set input_type = "password" %}{%
-      set input_name = "password" %}{% set aria_label = "password" %} {% include
-      './components/input.html' with context %}
+      set input_name = "password" %}{% set aria_label = "password" %}{% set
+      input_id = "password" %}{% include './components/input.html' with context
+      %}
       <!-- ps verify input -->
       {% set placeholder = "비밀번호 재입력" %}{% set input_type = "password"
       %}{% set input_name = "password_confirm" %}{% set aria_label = "password"
-      %} {% include './components/input.html' with context %}
-      <small class="-mt-[18px] ml-2 text-red-600" style="display: none"
+      %}{% set input_id = "password_confirm" %}{% include
+      './components/input.html' with context %}
+      <small
+        class="-mt-[18px] ml-2 text-red-600"
+        style="display: none"
+        id="password_error"
         >비밀번호가 일치하지 않습니다.</small
       >
       <!-- nickname input -->
