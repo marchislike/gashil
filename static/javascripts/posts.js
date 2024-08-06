@@ -33,6 +33,17 @@ const spreadFilters = () => {
   });
 };
 
+const getDateTime = () => {
+  const time = document.getElementById('time');
+
+  const date = new Date();
+  const hour = date.getHours();
+  const min = date.getMinutes();
+
+  time.setAttribute('value', `${hour}:${min}`);
+};
+
 document.addEventListener('DOMContentLoaded', () => {
+  getDateTime();
   spreadFilters();
 });
