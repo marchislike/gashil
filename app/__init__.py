@@ -3,8 +3,10 @@ from pymongo import MongoClient, errors
 from bson.objectid import ObjectId
 import os
 
+from .member.routes import member_bp
 from functools import wraps #*데코레이터로 DB connection check
 from .utils import check_required_fields
+
 
 def create_app():
     app = Flask(__name__, template_folder=os.path.join(os.getcwd(), 'templates'))
@@ -17,20 +19,18 @@ def create_app():
     except errors.ServerSelectionTimeoutError as err:
         app.db = None
 
-    def check_db_connection(db_check):
-        @wraps(db_check)
-        def decorated_function(*args, **kwargs): #kwargs: keyword 인자
-            if app.db is None:
-                return jsonify({"error": "DB 연결이 되어있지 않습니다."}), 500
-            return db_check(*args, **kwargs)
-        return decorated_function
+    app.register_blueprint(member_bp, url_prefix = '/members')
+
+    @app.before_request
+    def check_db_connection():
+        if app.db is None:
+            return jsonify({"error": "DB 연결이 되어있지 않습니다."}), 500
 
     @app.route('/')
     def home():
         return render_template('./pages/login.html')
 
     @app.route('/posts', methods=['GET'])
-    @check_db_connection
     def get_posts():
         try:
             posts = list(app.db.posts.find())
@@ -41,7 +41,6 @@ def create_app():
             return jsonify({"error": str(e)}), 500
         
     @app.route('/posts/<post_id>', methods=['GET'])
-    @check_db_connection
     def get_post(post_id):
         try:
             post = app.db.posts.find_one({'_id': ObjectId(post_id)})
@@ -55,7 +54,6 @@ def create_app():
         
 
     @app.route('/posts', methods=['POST'])
-    @check_db_connection
     def create_post():
         try:
             data = request.get_json()
@@ -83,7 +81,6 @@ def create_app():
     #등록자 수정, 삭제
 
     @app.route('/posts/<post_id>', methods=['PUT'])
-    @check_db_connection
     def update_post(post_id):
         try:
             data = request.get_json()
@@ -103,7 +100,6 @@ def create_app():
             return jsonify({"error": str(e)}), 500
 
     @app.route('/posts/<post_id>', methods=['DELETE'])
-    @check_db_connection
     def delete_post(post_id):
         try:
             result = app.db.posts.delete_one({'_id': ObjectId(post_id)})
