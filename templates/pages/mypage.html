@@ -1,5 +1,5 @@
-{% extends 'layout.html' %} {% block content %}{% set title = "가입하기" %} {%
-include './header/backHeader.html' with context %}
+{% extends 'layout.html' %} {% block content %}{% set title = "마이 페이지" %}
+{% include './header/backHeader.html' with context %}
 <div class="flex justify-center items-center mt-[20px]">
   <span class="text-[18px] font-semibold"
     >{{ user_id if user_id else '회원' }}</span
