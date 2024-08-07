@@ -10,6 +10,7 @@ def create_app():
     app = Flask(__name__, template_folder=os.path.join(os.getcwd(), 'templates'), static_folder=os.path.join(os.getcwd(), 'static')) #cwd - current working directory 현재 작업 절대경로 반환
     app.config["MONGO_URI"] = "mongodb+srv://kimwatson2026:whsdhkttms2026@gashil.yhejgv0.mongodb.net/?retryWrites=true&w=majority&appName=Gashil"
     app.config["DB_NAME"] = 'gashil'
+    app.secret_key = 'super_ultra_mega_SECRET_for_real'
 
     try:
         client = MongoClient(app.config["MONGO_URI"])

@@ -18,6 +18,6 @@ def create_user(user_id, password, nickname):
 def verify_user(user_id, password):
     user = current_app.db.users.find_one({'user_id': user_id})
     if user:
-        if bcrypt.checkpw(password.endcode('utf-8'), user['password']):
+        if bcrypt.checkpw(password.encode('utf-8'), user['password']):
             return True
     return False
