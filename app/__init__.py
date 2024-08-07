@@ -27,9 +27,9 @@ def create_app():
         if any(request.path.startswith(path) for path in excluded_paths):
             return
 
-        user_id = session.get('user_id')
-        if not user_id:
-            return render_template('./pages/login.html')
+        # user_id = session.get('user_id')
+        # if not user_id:
+        #     return render_template('./pages/login.html')
 
     app.register_blueprint(posts_bp)
     app.register_blueprint(users_bp)
