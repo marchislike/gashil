@@ -78,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     locale: 'ko',
     dateFormat: `Y년 m월 d일 H:i`,
     defaultDate: new Date(),
+    minDate: new Date(),
   });
 
   spreadFilters();

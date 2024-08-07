@@ -32,16 +32,18 @@ def home():
 def handle_post_buttons():
     data = request.form.to_dict()
     action = data.get('action')
+    post_id = data.get('_id')
+    user_id = session['user_id']
     
     try:
         if action == 'edit':
             return render_template('./pages/new.html', post=data, title='수정하기' )
         elif action == 'delete':
-            return delete_post(data)
+            return delete_post(post_id)
         elif action == 'cancel':
-            return cancel_participation(data)
+            return cancel_participation(post_id, user_id)
         elif action == 'participate':
-            return participate_post(data)
+            return participate_post(post_id, user_id)
         else:
             return redirect('/')
     except Exception as e:
@@ -96,59 +98,48 @@ def delete_post(post_id):
         result = current_app.db.posts.delete_one({'_id': ObjectId(post_id)})
         if result.deleted_count:
             logger.info(f"게시글 : {post_id}가 삭제되었습니다.")
-            
-            # 리다이렉트 추가
-            return redirect(url_for('routes.home'))
-        else:
-            return jsonify({"error": "이미 삭제된 게시글입니다."}), 404
+        return redirect('/')
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        logger.debug("Exception Error: %s", e)
+        return redirect('/')
     
 
-def participate_post(post_id):
+def participate_post(post_id, user_id):
     try:
-        data = request.get_json()
-        #! 로그인 기능 구현 후 수정 세션으로 얻기(-)
-        user_id = data.get("user_id")
-        if not user_id:
-            return jsonify({"error": "로그인이 필요합니다."}), 401
-        
         post = current_app.db.posts.find_one({'_id': ObjectId(post_id)})
         if not post:
-            return jsonify({"error": "이미 삭제된 게시글입니다."}), 404
-
+            logger.info(f"이미 삭제된 게시글입니다.")
+            return redirect('/')
+        
         # 참여인원이 최대 모집인원을 넘지 않도록 설정
         current_count = len(post.get('participants', []))
-        limit = post.get('limit', 0)
-        if current_count >= limit:
-            return jsonify({"error": "참여 인원이 초과되었습니다."}), 400
-        
-        
+        rides_limit = int(post.get('rides_limit', 0))
+        if current_count >= rides_limit:
+            logger.info(f"참여인원이 최대 모집인원을 넘습니다.")
+            return redirect('/')
         result = current_app.db.posts.update_one(
             {'_id': ObjectId(post_id)},
-            {'$addToSet': {'participants': user_id}}
+            {'$addToSet': {'participants': user_id},
+             '$inc': {'current_count': 1}
+            },
         )
 
         if result.matched_count:
-            return jsonify({"message": "참여가 완료되었습니다."}), 200
+            return redirect('/mypage')
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        logger.debug("Exception Error: %s", e)
+        return redirect('/')
 
-def cancel_participation(post_id):
+def cancel_participation(post_id, user_id):
     try:
-        data = request.get_json()
-        user_id = data.get("user_id")
-        if not user_id:
-            return jsonify({"error": "로그인이 필요합니다."}), 400
-
         result = current_app.db.posts.update_one(
             {'_id': ObjectId(post_id)},
-            {'$pull': {'participants': user_id}}
+            {'$pull': {'participants': user_id},
+              '$inc': {'current_count': -1}}
         )
-
         if result.matched_count:
-            return jsonify({"message": "참여가 취소되었습니다."}), 200
-        else:
-            return jsonify({"error": "이미 삭제된 게시글입니다."}), 404
+            logger.info(f"게시글 : {post_id}의 참여가 취소되었습니다.")
+            return redirect('/')
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        logger.debug("Exception Error: %s", e)
+        return redirect('/')

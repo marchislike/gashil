@@ -4,7 +4,7 @@
     method="POST"
     action="{{ url_for('posts.handle_post_buttons') }}"
   >
-    <input type="hidden" name="post_id" value="{{ post_data._id }}" />
+    <input type="hidden" name="_id" value="{{ post_data._id }}" />
     <input type="hidden" name="departure" value="{{ post_data.departure }}" />
     <input
       type="hidden"
