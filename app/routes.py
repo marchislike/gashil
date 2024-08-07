@@ -1,11 +1,13 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, session,redirect
 
 routes_bp = Blueprint('routes', __name__)
 
 # USER
 @routes_bp.route('/')
 def home():
-    return render_template('./pages/login.html')
+    if not session.get('user_id'):
+        return redirect('/login')
+    return render_template('./pages/main.html')
 
 @routes_bp.route('/join')
 def join_page():
@@ -13,6 +15,8 @@ def join_page():
 
 @routes_bp.route('/login')
 def login_page():
+    if session.get('user_id'):
+        return redirect('/')
     return render_template('./pages/login.html')
 
 # POST

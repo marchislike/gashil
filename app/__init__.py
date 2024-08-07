@@ -23,10 +23,6 @@ def create_app():
         if current_app.db is None:
             return jsonify({"error": "DB 연결이 되어있지 않습니다."}), 500
 
-    @app.route('/')
-    def home():
-        return render_template('layout.html')
-    
     app.register_blueprint(posts_bp)
     app.register_blueprint(users_bp)
     app.register_blueprint(routes_bp)
