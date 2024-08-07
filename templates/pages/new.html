@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}{% block content %}{% include
 './header/backHeader.html' with context %}
-<div class="mx-4 flex flex-col justify-between h-[91vh]">
+<form class="mx-4 flex flex-col justify-between h-[91vh]" id="update_post_form">
   <div class="mt-[38px]">
     <div class="flex justify-between items-center gap-5">
       <div class="flex flex-col justify-center gap-2 border-b-[1px] pb-2">
@@ -33,21 +33,28 @@
       <p class="text-[16px] text-Strong">인원 선택</p>
       <div class="flex justify-between items-center mt-2 border-b-[1px] pb-2">
         <div class="ml-2">
-          <span class="text-[18px]" id="rides_limit">4</span>
+          <input
+            type="text"
+            id="rides_limit"
+            value="4"
+            class="text-[18px] outline-none max-w-[30px] focus:outline-none"
+          />
           <span class="text-[18px]">명</span>
         </div>
-        <div class="flex gap-5">
+        <div class="flex gap-5" id="control_buttons_div">
           <button
+            type="button"
             aria-label="minus-button"
             class="w-[30px] h-[30px] rounded-full bg-gray-100 text-gray-600 flex justify-center items-center outline-none"
-            id="minus-button"
+            id="minus_button"
           >
             <i class="fa-solid fa-minus font-semibold text-sm"></i>
           </button>
           <button
+            type="button"
             aria-label="plus-button"
             class="w-[30px] h-[30px] rounded-full bg-gray-100 text-gray-600 flex justify-center items-center outline-none"
-            id="plus-button"
+            id="plus_button"
           >
             <i class="fa-solid fa-plus font-semibold text-sm"></i>
           </button>
@@ -58,6 +65,7 @@
       <p class="text-[16px] text-Strong">메모</p>
       <div class="flex justify-between items-center mt-2">
         <textarea
+          id="memo_area"
           rows="1"
           class="w-full outline-none resize-none pb-2 border-b-[1px] text-[18px]"
           placeholder="메모를 작성할 수 있어요."
@@ -72,5 +80,5 @@
   >
     작성하기
   </button>
-</div>
+</form>
 {% endblock %}

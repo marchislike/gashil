@@ -33,17 +33,25 @@ const spreadFilters = () => {
   });
 };
 
-const getDateTime = () => {
-  const cal = document.getElementById('datepicker-autohide');
-  const time = document.getElementById('time');
+const controlLimitBtn = () => {
+  const minusBtn = document.getElementById('minus_button');
+  const plusBtn = document.getElementById('plus_button');
+  const limitElm = document.getElementById('rides_limit');
 
-  const date = new Date();
-  let hour = date.getHours();
-  let min = date.getMinutes();
-  if (hour < 10) hour = `0${hour}`;
-  if (min < 10) min = `0${min}`;
-
-  time.setAttribute('value', `${hour}:${min}`);
+  minusBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    let rides_limit = parseInt(document.getElementById('rides_limit').value);
+    if (rides_limit > 0) {
+      limitElm.value = rides_limit - 1;
+    }
+  });
+  plusBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    let rides_limit = parseInt(document.getElementById('rides_limit').value);
+    limitElm.value = rides_limit + 1;
+  });
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -51,11 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
     enableTime: true,
     locale: 'ko',
     dateFormat: `Y년 m월 d일 (D) H:i`,
-    defaultDate: new Date(), // Set default date to current date and time
-    onChange: function (selectedDates, dateStr, instance) {
-      console.log('Selected date: ', dateStr);
-    },
+    defaultDate: new Date(),
   });
 
+  controlLimitBtn();
   spreadFilters();
 });
