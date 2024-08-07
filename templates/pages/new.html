@@ -4,8 +4,9 @@
   class="mx-4 flex flex-col justify-between h-[91vh]"
   id="update_post_form"
   method="POST"
-  action="{{ url_for('posts.create_post') }}"
+  action="{{ url_for('posts.update_create_post') }}"
 >
+  <input type="hidden" name="_id" value="{{ post._id if post else '' }}" />
   <div class="mt-[38px]">
     <div class="flex justify-between items-center gap-5">
       <div class="flex flex-col justify-center gap-2 border-b-[1px] pb-2">
@@ -16,6 +17,7 @@
           type="text"
           class="outline-none placeholder:text-gray-400 placeholder:font-normal w-full font-semibold text-[24px] mt-2"
           placeholder="출발지"
+          value="{{ post.departure if post else '' }}"
         />
       </div>
       <div class="flex flex-col justify-center gap-2 border-b-[1px] pb-2">
@@ -26,6 +28,7 @@
           type="text"
           class="outline-none placeholder:text-gray-400 placeholder:font-normal w-full font-semibold text-[24px] mt-2"
           placeholder="도착지"
+          value="{{ post.destination if post else '' }}"
         />
       </div>
     </div>
@@ -49,7 +52,7 @@
             name="rides_limit"
             type="text"
             id="rides_limit"
-            value="4"
+            value="{{ post.rides_limit if post else 4 }}"
             class="text-[18px] outline-none max-w-[20px] focus:outline-none"
           />
           <span class="text-[18px]">명</span>
@@ -83,6 +86,7 @@
           rows="1"
           class="w-full outline-none resize-none pb-2 border-b-[1px] text-[18px]"
           placeholder="메모를 작성할 수 있어요."
+          value="{{ post.memo if post else '' }}"
         ></textarea>
       </div>
     </div>

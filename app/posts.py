@@ -33,59 +33,66 @@ def get_post(post_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# 등록
+# 글(조회, 수정, 삭제) 버튼 핸들러
+@posts_bp.route('/posts/form-handler', methods=['POST'])
+def handle_post_buttons():
+    data = request.form.to_dict()
+    action = data.get('action')
+    
+    try:
+        if action == 'edit':
+            return render_template('./pages/new.html', post=data, title='수정하기' )
+        elif action == 'delete':
+            return delete_post(data)
+        elif action == 'cancel':
+            return cancel_participation(data)
+        elif action == 'participate':
+            return participate_post(data)
+        else:
+            return redirect('/')
+    except Exception as e:
+        logger.debug("Exception Error: %s", e)
+        return redirect('/')
+
+
+# 업데이트 핸들러
 @posts_bp.route('/posts', methods=['POST'])
-def create_post():
+def update_create_post():
     try:
         data = request.form.to_dict()
-        departure, destination, date, rides_limit, memo = data.get('departure'),data.get('destination'),data.get('date'),data.get('rides_limit'),data.get('memo')
+        departure, destination, date, rides_limit, _id = data.get('departure'),data.get('destination'),data.get('date'),data.get('rides_limit'),data.get('_id')
         if not departure or not destination or not date or not rides_limit:
-            return render_template('./pages/new.html', error="필수 항목을 채워주세요.", form_data=data)
-        
-        post = {
-            "user_id": session['user_id'],
-            "departure":departure,
-            "destination": destination,
-            "date": date,
-            "memo": memo,
-            "rides_limit": rides_limit,
-            "current_count": 1,
-            "participants": [session['user_id']]
-        }
-        
-        created = save_update_post(post)
-        if created:
+            return render_template('./pages/new.html', error="필수 항목을 채워주세요.", post=data)
+            
+        # 수정    
+        if _id:
+            update_fields = {key: value for key, value in data.items() if key != '_id'}
+            result = current_app.db.posts.update_one({'_id': ObjectId(_id)}, {'$set': update_fields})
+            if result.matched_count:
+                logger.info(f"게시글 : {_id}가 수정되었습니다.")
             return redirect('/')
+        # 등록
         else:
-            return render_template('./pages/new.html', error="알 수 없는 에러가 발생했어요. 다시 시도해주세요😿", form_data=data)
-
+            user_id = session['user_id']
+            post = {
+                "user_id": user_id,
+                "departure":data['departure'],
+                "destination": data['destination'],
+                "date": data['date'],
+                "memo": data['memo'],
+                "rides_limit": data['rides_limit'],
+                "current_count": 1,
+                "participants": [user_id]
+            }
+            created = save_update_post(post)
+            if created:
+                return redirect('/')
     except Exception as e:
         logger.debug("Exception Error: %s", e) 
-        return render_template('./pages/new.html', error="알 수 없는 에러가 발생했어요. 다시 시도해주세요😿", form_data=data)
+        return render_template('./pages/new.html', error="알 수 없는 에러가 발생했어요. 다시 시도해주세요😿", post=data)
+    
 
-# 수정
-@posts_bp.route('/posts/<post_id>', methods=['PUT'])
-def update_post(post_id):
-    try:
-        data = request.get_json()
-        update_fields = {key: value for key, value in data.items() if key != '_id'}
-        required_fields = ["departure", "arrival", "date", "limit"]
-        error_response = check_required_fields(required_fields, update_fields)
-        if error_response:
-            return error_response
-        result = current_app.db.posts.update_one({'_id': ObjectId(post_id)}, {'$set': update_fields})
-        if result.matched_count:
-            logger.info(f"게시글 : {post_id}가 수정되었습니다.")
-            
-            # 리다이렉트 추가
-            return redirect(url_for('routes.home'))
-        else:
-            return jsonify({"error": "이미 삭제된 게시글입니다."}), 404
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 
-# 삭제
-@posts_bp.route('/posts/<post_id>', methods=['DELETE'])
 def delete_post(post_id):
     try:
         result = current_app.db.posts.delete_one({'_id': ObjectId(post_id)})
@@ -100,9 +107,6 @@ def delete_post(post_id):
         return jsonify({"error": str(e)}), 500
     
 
-## 참여 여부 ##
-
-@posts_bp.route('/posts/<post_id>/participation', methods=['PUT'])
 def participate_post(post_id):
     try:
         data = request.get_json()
@@ -132,8 +136,7 @@ def participate_post(post_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@posts_bp.route('/posts/<post_id>/participation', methods=['DELETE'])
-def cancel(post_id):
+def cancel_participation(post_id):
     try:
         data = request.get_json()
         user_id = data.get("user_id")

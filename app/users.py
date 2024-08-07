@@ -61,7 +61,9 @@ def get_user_posts():
         for post in participated_posts:
             post['_id'] = str(post['_id'])
 
-        posts = authored_posts + participated_posts
+        # 중복 제거
+        posts_dict = {post['_id']: post for post in authored_posts + participated_posts}
+        posts = list(posts_dict.values())
         return render_template('./pages/mypage.html', posts= posts ,user_id = user_id)
     
     except Exception as e:
