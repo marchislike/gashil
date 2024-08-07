@@ -25,7 +25,11 @@ def create_app():
         
     @app.before_request
     def check_user_session():
-        user_id = session['user_id']
+        excluded_paths = ['/join'] 
+        if request.path in excluded_paths: 
+            return
+        
+        user_id = session.get('user_id')
         if not user_id:
             return render_template('./pages/login.html')
 
