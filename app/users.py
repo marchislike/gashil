@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, current_app, redirect, url_for, render_template, session
+from flask import Blueprint, request, current_app, redirect, render_template, session
 from app.models.user import create_user, check_duplicated_userId, verify_user
 import logging
 

@@ -1,11 +1,34 @@
 const handleFilterClick = (li) => {
+  const filterText = li.textContent.trim();
+
   if (li.classList.contains('bg-gray-100')) {
     li.classList.remove('bg-gray-100', 'text-gray-400');
     li.classList.add('bg-Low', 'text-Strong');
+    updateFilteredList(filterText);
   } else {
     li.classList.remove('bg-Low', 'text-Strong');
     li.classList.add('bg-gray-100', 'text-gray-400');
+    clearFilters();
   }
+};
+
+const updateFilteredList = (filterText) => {
+  const posts = document.querySelectorAll('.post-list-item');
+  posts.forEach((post) => {
+    const postText = post.textContent;
+    if (postText.includes(filterText)) {
+      post.style.display = 'block';
+    } else {
+      post.style.display = 'none';
+    }
+  });
+};
+
+const clearFilters = () => {
+  const posts = document.querySelectorAll('.post-list-item');
+  posts.forEach((post) => {
+    post.style.display = 'block';
+  });
 };
 
 const spreadFilters = () => {

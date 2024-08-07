@@ -1,7 +1,6 @@
 import logging
 from flask import Blueprint, request, jsonify, current_app, redirect, url_for,render_template,session
 from bson.objectid import ObjectId
-from .utils import check_required_fields
 from app.models.post import save_update_post
 from datetime import datetime
 from pytz import timezone
