@@ -1,15 +1,13 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, current_app
 from pymongo import MongoClient, errors
-from bson.objectid import ObjectId
-import os
-
+from .posts import posts_bp
 from .users.routes import users_bp
-from functools import wraps #*데코레이터로 DB connection check
-from .utils import check_required_fields
+from .routes import routes_bp
+import os
 
 
 def create_app():
-    app = Flask(__name__, template_folder=os.path.join(os.getcwd(), 'templates'))
+    app = Flask(__name__, template_folder=os.path.join(os.getcwd(), 'templates')) #cwd - current working directory 현재 작업 절대경로 반환
     app.config["MONGO_URI"] = "mongodb+srv://kimwatson2026:whsdhkttms2026@gashil.yhejgv0.mongodb.net/?retryWrites=true&w=majority&appName=Gashil"
     app.config["DB_NAME"] = 'gashil'
 
@@ -19,96 +17,17 @@ def create_app():
     except errors.ServerSelectionTimeoutError as err:
         app.db = None
 
-    app.register_blueprint(users_bp)
-
     @app.before_request
     def check_db_connection():
-        if app.db is None:
+        if current_app.db is None:
             return jsonify({"error": "DB 연결이 되어있지 않습니다."}), 500
 
     @app.route('/')
     def home():
-        return render_template('./pages/login.html')
-
-    @app.route('/posts', methods=['GET'])
-    def get_posts():
-        try:
-            posts = list(app.db.posts.find())
-            for post in posts: #* Objectid를 사용하면서 MongoDB에서 json 직렬화가 가능하도록
-                post['_id'] = str(post['_id'])
-            return jsonify(posts), 200
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
-        
-    @app.route('/posts/<post_id>', methods=['GET'])
-    def get_post(post_id):
-        try:
-            post = app.db.posts.find_one({'_id': ObjectId(post_id)})
-            if post:
-                post['_id'] = str(post['_id'])
-                return jsonify(post), 200
-            else:
-                return jsonify({"error": "게시글을 찾을 수 없습니다."}), 404
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
-        
-
-    @app.route('/posts', methods=['POST'])
-    def create_post():
-        try:
-            data = request.get_json()
-            required_fields = ["departure", "arrival", "date", "limit"]
-            error_response = check_required_fields(required_fields, data)
-            if error_response:
-                return error_response
-            user_id = data['user_id']
-            post = {
-                "user_id": user_id,
-                "departure": data['departure'],
-                "arrival": data['arrival'],
-                "date": data['date'],
-                "memo": data['memo'],
-                "limit": data['limit'],
-                "current_count": 1,
-                "participants": [user_id]
-            }
-            result = app.db.posts.insert_one(post)
-            post['_id'] = str(result.inserted_id)
-            return jsonify({"message": "게시글이 등록되었습니다.", "_id": str(result.inserted_id)}), 201
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
+        return render_template('layout.html')
     
-    #등록자 수정, 삭제
-
-    @app.route('/posts/<post_id>', methods=['PUT'])
-    def update_post(post_id):
-        try:
-            data = request.get_json()
-            update_fields = {key: value for key, value in data.items() if key != '_id'}
-            required_fields = ["departure", "arrival", "date", "limit"]
-            
-            error_response = check_required_fields(required_fields, update_fields)
-            if error_response:
-                return error_response
-            
-            result = app.db.posts.update_one({'_id': ObjectId(post_id)}, {'$set': update_fields})
-            if result.matched_count:
-                return jsonify({"message": "게시글이 수정되었습니다."}), 200
-            else:
-                return jsonify({"error": "이미 삭제된 게시글입니다."}), 404
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
-
-    @app.route('/posts/<post_id>', methods=['DELETE'])
-    def delete_post(post_id):
-        try:
-            result = app.db.posts.delete_one({'_id': ObjectId(post_id)})
-            if result.deleted_count:
-                return jsonify({"message": "게시글이 삭제되었습니다."}), 200
-            else:
-                return jsonify({"error": "이미 삭제된 게시글입니다."}), 404
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
-
-
+    app.register_blueprint(posts_bp)
+    app.register_blueprint(users_bp)
+    app.register_blueprint(routes_bp)
+    
     return app
