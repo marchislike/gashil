@@ -1,4 +1,4 @@
-function validateJoinForm() {
+const validateJoinForm = () => {
   const password = document.getElementById('password').value;
   const confirmPassword = document.getElementById('password_confirm').value;
   const user_id = document.getElementById('user_id').value;
@@ -23,9 +23,9 @@ function validateJoinForm() {
       requestBtn.classList.add('bg-Low');
     }
   }
-}
+};
 
-function validateLoginForm() {
+const validateLoginForm = () => {
   const user_id = document.getElementById('user_id').value;
   const password = document.getElementById('password').value;
   const requestBtn = document.getElementById('request_login_btn');
@@ -39,7 +39,7 @@ function validateLoginForm() {
     requestBtn.classList.remove('bg-Primary');
     requestBtn.classList.add('bg-Low');
   }
-}
+};
 
 document.addEventListener('DOMContentLoaded', () => {
   document
