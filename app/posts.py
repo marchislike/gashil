@@ -1,7 +1,8 @@
 import logging
-from flask import Blueprint, request, jsonify, current_app, redirect, url_for
+from flask import Blueprint, request, jsonify, current_app, redirect, url_for,render_template,session
 from bson.objectid import ObjectId
 from .utils import check_required_fields
+from app.models.post import save_update_post
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
@@ -36,33 +37,31 @@ def get_post(post_id):
 @posts_bp.route('/posts', methods=['POST'])
 def create_post():
     try:
-        data = request.get_json()
-        required_fields = ["departure", "arrival", "date", "limit"]
-        error_response = check_required_fields(required_fields, data)
-        if error_response:
-            return error_response
-        user_id = data['user_id']
+        data = request.form.to_dict()
+        departure, destination, date, rides_limit, memo = data.get('departure'),data.get('destination'),data.get('date'),data.get('rides_limit'),data.get('memo')
+        if not departure or not destination or not date or not rides_limit:
+            return render_template('./pages/new.html', error="필수 항목을 채워주세요.", form_data=data)
+        
         post = {
-            "user_id": user_id,
-            "departure": data['departure'],
-            "arrival": data['arrival'],
-            "date": data['date'],
-            "memo": data['memo'],
-            "limit": data['limit'],
+            "user_id": session['user_id'],
+            "departure":departure,
+            "destination": destination,
+            "date": date,
+            "memo": memo,
+            "rides_limit": rides_limit,
             "current_count": 1,
-            "participants": [user_id]
+            "participants": [session['user_id']]
         }
-        result = current_app.db.posts.insert_one(post)
-        post['_id'] = str(result.inserted_id)
         
-        
-        logger.info(f"게시글이 등록되었습니다. post_id: {post['_id']}")
-        
-        # 리다이렉트 추가
-        return redirect(url_for('routes.home'))
+        created = save_update_post(post)
+        if created:
+            return redirect('/')
+        else:
+            return render_template('./pages/new.html', error="알 수 없는 에러가 발생했어요. 다시 시도해주세요😿", form_data=data)
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        logger.debug("Exception Error: %s", e) 
+        return render_template('./pages/new.html', error="알 수 없는 에러가 발생했어요. 다시 시도해주세요😿", form_data=data)
 
 # 수정
 @posts_bp.route('/posts/<post_id>', methods=['PUT'])

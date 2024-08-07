@@ -23,7 +23,7 @@ def join_user():
         return redirect('/login')
     except Exception as e:
         logger.debug("Exception Error: %s", e) 
-        return render_template('./pages/join.html', error="알 수 없는 에러가 발생했어요. 다시 시도해주세요.", form_data=payload)
+        return render_template('./pages/join.html', error="알 수 없는 에러가 발생했어요. 다시 시도해주세요😿", form_data=payload)
 
 # 로그인
 @users_bp.route('/users/login', methods=['POST'])
@@ -43,7 +43,7 @@ def login():
         return render_template('/pages/main.html')
     except Exception as e:
         logger.debug("Exception Error: %s", e) 
-        return render_template('./pages/login.html', error="알 수 없는 에러가 발생했어요. 다시 시도해주세요.", form_data=payload) 
+        return render_template('./pages/login.html', error="알 수 없는 에러가 발생했어요. 다시 시도해주세요😿", form_data=payload) 
 
 ## 사용자 프로필에서 글 모음 조회
 @users_bp.route('/users/<user_id>/posts', methods=['GET'])

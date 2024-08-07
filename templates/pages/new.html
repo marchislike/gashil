@@ -1,21 +1,28 @@
 {% extends 'layout.html' %}{% block content %}{% include
 './header/backHeader.html' with context %}
-<form class="mx-4 flex flex-col justify-between h-[91vh]" id="update_post_form">
+<form
+  class="mx-4 flex flex-col justify-between h-[91vh]"
+  id="update_post_form"
+  method="POST"
+  action="{{ url_for('posts.create_post') }}"
+>
   <div class="mt-[38px]">
     <div class="flex justify-between items-center gap-5">
       <div class="flex flex-col justify-center gap-2 border-b-[1px] pb-2">
-        <p class="text-[16px] font-semibold">출발</p>
+        <p class="text-[16px] text-Strong">출발</p>
         <input
           id="departure"
+          name="departure"
           type="text"
           class="outline-none placeholder:text-gray-400 placeholder:font-normal w-full font-semibold text-[24px] mt-2"
           placeholder="출발지"
         />
       </div>
       <div class="flex flex-col justify-center gap-2 border-b-[1px] pb-2">
-        <p class="text-[16px] font-semibold">도착</p>
+        <p class="text-[16px] text-Strong">도착</p>
         <input
           id="destination"
+          name="destination"
           type="text"
           class="outline-none placeholder:text-gray-400 placeholder:font-normal w-full font-semibold text-[24px] mt-2"
           placeholder="도착지"
@@ -27,6 +34,7 @@
       <div class="relative flex">
         <input
           id="datetimepicker"
+          name="date"
           type="text"
           class="w-full text-[18px] outline-none border-b-[1px] py-2"
           placeholder="날짜와 시간을 선택해주세요."
@@ -34,10 +42,11 @@
       </div>
     </div>
     <div class="mt-12">
-      <p class="text-[16px] text-Strong">인원 선택</p>
+      <p class="text-[16px] text-Strong">총 인원 선택</p>
       <div class="flex justify-between items-center mt-2 border-b-[1px] pb-2">
         <div class="ml-2">
           <input
+            name="rides_limit"
             type="text"
             id="rides_limit"
             value="4"
@@ -69,7 +78,8 @@
       <p class="text-[16px] text-Strong">메모</p>
       <div class="flex justify-between items-center mt-2">
         <textarea
-          id="memo_area"
+          id="memo"
+          name="memo"
           rows="1"
           class="w-full outline-none resize-none pb-2 border-b-[1px] text-[18px]"
           placeholder="메모를 작성할 수 있어요."

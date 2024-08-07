@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, current_app
+from flask import Flask, render_template, request, jsonify, current_app, session
 from pymongo import MongoClient, errors
 from .posts import posts_bp
 from .users import users_bp
@@ -22,6 +22,12 @@ def create_app():
     def check_db_connection():
         if current_app.db is None:
             return jsonify({"error": "DB 연결이 되어있지 않습니다."}), 500
+        
+    @app.before_request
+    def check_user_session():
+        user_id = session['user_id']
+        if not user_id:
+            return render_template('./pages/login.html')
 
     app.register_blueprint(posts_bp)
     app.register_blueprint(users_bp)
