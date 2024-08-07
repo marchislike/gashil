@@ -55,11 +55,13 @@ def get_user_posts():
         authored_posts = list(current_app.db.posts.find({"user_id": user_id}))
         for post in authored_posts:
             post['_id'] = str(post['_id'])
+            post['date'] = post['date'].strftime("%Y년 %m월 %d일 %H:%M")
 
         # 내가 참여를 누른 글
         participated_posts = list(current_app.db.posts.find({"participants": user_id}))
         for post in participated_posts:
             post['_id'] = str(post['_id'])
+            post['date'] = post['date'].strftime("%Y년 %m월 %d일 %H:%M")
 
         # 중복 제거
         posts_dict = {post['_id']: post for post in authored_posts + participated_posts}

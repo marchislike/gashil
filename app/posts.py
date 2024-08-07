@@ -3,6 +3,8 @@ from flask import Blueprint, request, jsonify, current_app, redirect, url_for,re
 from bson.objectid import ObjectId
 from .utils import check_required_fields
 from app.models.post import save_update_post
+from datetime import datetime
+from pytz import timezone
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
@@ -11,25 +13,17 @@ logger = logging.getLogger(__name__)
 posts_bp = Blueprint('posts', __name__)
 
 # 조회
-@posts_bp.route('/posts', methods=['GET'])
-def get_posts():
+@posts_bp.route('/', methods=['GET'])
+def home():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect('/login')
     try:
-        posts = list(current_app.db.posts.find())
+        posts = list(current_app.db.posts.find({"date": {"$gt": datetime.now(timezone('Asia/Seoul'))}}))
         for post in posts:
             post['_id'] = str(post['_id'])
-        return jsonify(posts), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@posts_bp.route('/posts/<post_id>', methods=['GET'])
-def get_post(post_id):
-    try:
-        post = current_app.db.posts.find_one({'_id': ObjectId(post_id)})
-        if post:
-            post['_id'] = str(post['_id'])
-            return jsonify(post), 200
-        else:
-            return jsonify({"error": "게시글을 찾을 수 없습니다."}), 404
+            post['date'] = post['date'].strftime("%Y년 %m월 %d일 %H:%M")
+        return render_template('./pages/main.html', posts= posts, user_id = user_id)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -67,23 +61,27 @@ def update_create_post():
         # 수정    
         if _id:
             update_fields = {key: value for key, value in data.items() if key != '_id'}
+            update_fields['date'] =  datetime.strptime(date, "%Y년 %m월 %d일 %H:%M")
             result = current_app.db.posts.update_one({'_id': ObjectId(_id)}, {'$set': update_fields})
             if result.matched_count:
                 logger.info(f"게시글 : {_id}가 수정되었습니다.")
             return redirect('/')
+        
         # 등록
         else:
             user_id = session['user_id']
+            print(type(date), date)
             post = {
                 "user_id": user_id,
-                "departure":data['departure'],
-                "destination": data['destination'],
-                "date": data['date'],
+                "departure":departure,
+                "destination": destination,
+                "date": datetime.strptime(date, "%Y년 %m월 %d일 %H:%M"),
                 "memo": data['memo'],
-                "rides_limit": data['rides_limit'],
+                "rides_limit": rides_limit,
                 "current_count": 1,
                 "participants": [user_id]
             }
+            print(post)
             created = save_update_post(post)
             if created:
                 return redirect('/')
