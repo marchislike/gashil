@@ -1,9 +1,12 @@
 import bcrypt
+from pytz import timezone
 from flask import current_app
+from datetime import datetime
 
 def create_user(user_id, password, nickname):
     password_hash = bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt())
-    user = {'user_id': user_id, 'password': password_hash, 'nickname': nickname}
+    current_time = datetime.now(timezone('Asia/Seoul'))
+    user = {'user_id': user_id, 'password': password_hash, 'nickname': nickname, 'created_at':current_time, 'updated_at': current_time}
     current_app.db.users.insert_one(user)
 
 def verify_user(user_id, password):

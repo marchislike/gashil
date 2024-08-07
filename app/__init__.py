@@ -2,8 +2,8 @@ from flask import Flask, render_template, request, jsonify
 from pymongo import MongoClient, errors
 from bson.objectid import ObjectId
 import os
-\\
-from .user.routes import user_bp
+
+from .users.routes import users_bp
 from functools import wraps #*데코레이터로 DB connection check
 from .utils import check_required_fields
 
@@ -19,7 +19,7 @@ def create_app():
     except errors.ServerSelectionTimeoutError as err:
         app.db = None
 
-    app.register_blueprint(user_bp, url_prefix = '/users')
+    app.register_blueprint(users_bp)
 
     @app.before_request
     def check_db_connection():
