@@ -4,7 +4,7 @@ routes_bp = Blueprint('routes', __name__)
 
 @routes_bp.route('/')
 def home():
-    return render_template('layout.html')
+    return render_template('login.html')
 
 @routes_bp.route('/new-post')
 def new_post_page():

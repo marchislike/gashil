@@ -131,12 +131,10 @@ def participate_post(post_id):
 
         if result.matched_count:
             return jsonify({"message": "참여가 완료되었습니다."}), 200
-        else:
-            return jsonify({"error": "게시글을 찾을 수 없습니다."}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@posts_bp.route('/posts/<post_id>/cancel', methods=['DELETE'])
+@posts_bp.route('/posts/<post_id>/participation', methods=['DELETE'])
 @check_db_connection
 def cancel(post_id):
     try:
@@ -153,6 +151,6 @@ def cancel(post_id):
         if result.matched_count:
             return jsonify({"message": "참여가 취소되었습니다."}), 200
         else:
-            return jsonify({"error": "게시글을 찾을 수 없습니다."}), 404
+            return jsonify({"error": "이미 삭제된 게시글입니다."}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500

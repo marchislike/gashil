@@ -1,5 +1,4 @@
-from flask import jsonify, current_app
-from functools import wraps #*데코레이터로 DB connection check
+from flask import jsonify
 
 HTTP_BAD_REQUEST = 400
 
@@ -10,11 +9,3 @@ def check_required_fields(required_fields, data):
         error_message = f"필수 항목을 채워주세요!: {', '.join(invalid_fields)}"
         return jsonify({"error": error_message}), HTTP_BAD_REQUEST
     return None
-    
-def check_db_connection(db_check):
-    @wraps(db_check)
-    def decorated_function(*args, **kwargs): #kwargs: keyword 인자
-        if current_app.db is None:
-            return jsonify({"error": "DB 연결이 되어있지 않습니다."}), 500
-        return db_check(*args, **kwargs)
-    return decorated_function
