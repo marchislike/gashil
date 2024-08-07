@@ -116,6 +116,7 @@ def participate_post(post_id, user_id):
         if current_count >= rides_limit:
             logger.info(f"참여인원이 최대 모집인원을 넘습니다.")
             return redirect('/')
+            
         result = current_app.db.posts.update_one(
             {'_id': ObjectId(post_id)},
             {'$addToSet': {'participants': user_id},
