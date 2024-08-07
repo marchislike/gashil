@@ -1,6 +1,11 @@
 {% extends 'layout.html' %} {% block content %}{% set title = "가입하기" %} {%
 include './header/backHeader.html' with context %}
-<form class="flex flex-col justify-between min-h-[91vh]" id="join_form">
+<form
+  class="flex flex-col justify-between min-h-[91vh]"
+  id="join_form"
+  method="POST"
+  action="{{ url_for('users.join_user') }}"
+>
   <div class="flex flex-col">
     <div class="text-[22px] font-bold mt-[24px]">
       <h1>아래 정보로</h1>
@@ -8,44 +13,32 @@ include './header/backHeader.html' with context %}
     </div>
     <div class="mt-[48px] flex flex-col gap-[20px]">
       <!-- id input -->
-      <div
-        class="flex flex-row items-center justify-between w-full h-[56px] px-4 rounded-md border-2 border-gray-200"
+      {% set placeholder = "아이디 입력" %}{% set input_type = "text" %}{% set
+      input_name = "user_id" %}{% set aria_label = "user_id" %}{% set input_id =
+      "user_id" %}{% set input_value = form_data.user_id if form_data else ''
+      %}{% include './components/input.html' with context %}
+      <small class="-mt-[18px] ml-2 text-red-600" id="password_error"
+        >{{ id_error if id_error else '' }}</small
       >
-        <input
-          id="user_id"
-          aria-label="user_id"
-          placeholder="아이디 입력"
-          type="text"
-          class="outline-none placeholder:text-gray-400 placeholder:font-normal min-w-[230px] font-semibold"
-        />
-        <button
-          type="button"
-          class="text-[14px] text-gray-400 underline underline-offset-4 font-semibold"
-        >
-          중복확인
-        </button>
-      </div>
-
       <!-- ps input -->
       {% set placeholder = "비밀번호 입력" %}{% set input_type = "password" %}{%
       set input_name = "password" %}{% set aria_label = "password" %}{% set
-      input_id = "password" %}{% include './components/input.html' with context
-      %}
+      input_id = "password" %}{% set input_value = form_data.password if
+      form_data else '' %}{% include './components/input.html' with context %}
       <!-- ps verify input -->
       {% set placeholder = "비밀번호 재입력" %}{% set input_type = "password"
       %}{% set input_name = "password_confirm" %}{% set aria_label = "password"
-      %}{% set input_id = "password_confirm" %}{% include
+      %}{% set input_id = "password_confirm" %}{% set input_value =
+      form_data.password if form_data else '' %}{% include
       './components/input.html' with context %}
-      <small
-        class="-mt-[18px] ml-2 text-red-600"
-        style="display: none"
-        id="password_error"
-        >비밀번호가 일치하지 않습니다.</small
+      <small class="-mt-[18px] ml-2 text-red-600" id="password_error"
+        >{{ error if error else '' }}</small
       >
       <!-- nickname input -->
       {% set placeholder = "닉네임 입력" %}{% set input_type = "text" %}{% set
       input_name = "nickname" %}{% set input_id = "nickname" %}{% set aria_label
-      = "nickname" %} {% include './components/input.html' with context %}
+      = "nickname" %}{% set input_value = form_data.nickname if form_data else
+      '' %} {% include './components/input.html' with context %}
       <small class="-mt-[18px] ml-2 text-gray-600"
         >가급적 본명을 사용해주세요.</small
       >
@@ -59,5 +52,4 @@ include './header/backHeader.html' with context %}
     가입하기
   </button>
 </form>
-{% endblock %} {% block script %} {% set script_required = true %} {% set
-script_file = './javascripts/member.js' %} {% endblock %}
+{% endblock %}
