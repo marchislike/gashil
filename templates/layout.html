@@ -19,7 +19,6 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
     />
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr" defer></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/ko.js" defer></script>
     <link
       rel="stylesheet"
@@ -46,9 +45,6 @@
     >
       {% block content %}{% endblock %}
     </main>
-    <!-- {% if script_required %}
-    <script src="{{ url_for('static', filename=script_file) }}"></script>
-    {% endif %} -->
     <script src="{{ url_for('static', filename='javascripts/users.js') }}"></script>
     <script src="{{ url_for('static', filename='javascripts/posts.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>

@@ -11,7 +11,7 @@
       method="POST"
       action="{{ url_for('users.login') }}"
     >
-      {% set placeholder = "아이디 입력" %}{% set input_type = "text" %}{% set
+      {% set placeholder = "본명 입력" %}{% set input_type = "text" %}{% set
       input_name = "user_id" %}{% set aria_label = "user_id" %}{% set input_id =
       "user_id" %}{% set input_value = form_data.user_id if form_data else ''
       %}{% include './components/input.html' with context %}
@@ -44,5 +44,4 @@
     </a>
   </div>
 </section>
-{% endblock %} {% block script %} {% set script_required = true %} {% set
-script_file = 'javascripts/users.js' %} {% endblock %}
+{% endblock %}
