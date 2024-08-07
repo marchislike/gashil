@@ -1,62 +1,12 @@
 {% extends 'layout.html' %} {% block content %}{% set title = "가입하기" %} {%
 include './header/backHeader.html' with context %}
 <div class="flex justify-center items-center mt-[20px]">
-  <span class="text-[18px] font-semibold">이수진</span
+  <span class="text-[18px] font-semibold"
+    >{{ user_id if user_id else '회원' }}</span
   ><span class="text-[16px]">님의 카풀 일정입니다 🚖</span>
 </div>
 <ul class="flex flex-col mx-2 mt-[38px] gap-[20px] h-[78vh] overflow-auto">
-  <li class="flex flex-col gap-[8px] border-b-[1px] pb-4">
-    <div class="flex justify-between items-center w-full">
-      <div class="flex gap-10 items-center w-2/3 font-semibold text-[18px]">
-        <span>문지 기숙사</span>
-        <i class="fa-solid fa-arrow-right text-gray-400"></i>
-        <span>다이소</span>
-      </div>
-      <div>
-        <i class="fa-solid fa-users text-gray-400"></i>
-        <span>4/4</span>
-      </div>
-    </div>
-    <div class="flex gap-2 items-center">
-      <i class="fa-solid fa-circle text-red-600"></i>
-      <span>08/06 화 17:30</span>
-    </div>
-    <p class="text-[14px] h-[50px] min-h-[50px] py-2">
-      사감실앞에서 다 모이면 출발할게요!
-    </p>
-    <div class="flex justify-end items-center gap-2 text-[14px]">
-      <button class="w-[68px] py-1 text-gray-400 bg-gray-100 rounded-sm">
-        수정
-      </button>
-      <button class="w-[68px] py-1 text-gray-400 bg-gray-100 rounded-sm">
-        삭제
-      </button>
-    </div>
-  </li>
-  <li class="flex flex-col gap-[8px] border-b-[1px] pb-4">
-    <div class="flex justify-between items-center w-full">
-      <div class="flex gap-10 items-center w-2/3 font-semibold text-[18px]">
-        <span>카이스트 본관</span>
-        <i class="fa-solid fa-arrow-right text-gray-400"></i>
-        <span>문지 기숙사</span>
-      </div>
-      <div>
-        <i class="fa-solid fa-users text-gray-400"></i>
-        <span>2/4</span>
-      </div>
-    </div>
-    <div class="flex gap-2 items-center">
-      <i class="fa-solid fa-circle text-gray-400"></i>
-      <span>08/07 수 13:30</span>
-    </div>
-    <p class="text-[14px] h-[50px] min-h-[50px] py-2">
-      사람들 다 모이면 출발할게요!
-    </p>
-    <div class="flex justify-end items-center gap-2 text-[14px]">
-      <button class="w-[68px] py-1 text-gray-400 bg-gray-100 rounded-sm">
-        취소
-      </button>
-    </div>
-  </li>
+  {% for post in posts %} {% set post_data = post %} {% set current_user_id =
+  user_id %} {% include './components/post.html' %}{% endfor %}
 </ul>
 {% endblock %}

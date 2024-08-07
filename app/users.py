@@ -45,9 +45,11 @@ def login():
         logger.debug("Exception Error: %s", e) 
         return render_template('./pages/login.html', error="알 수 없는 에러가 발생했어요. 다시 시도해주세요😿", form_data=payload) 
 
-## 사용자 프로필에서 글 모음 조회
-@users_bp.route('/users/<user_id>/posts', methods=['GET'])
-def get_user_posts(user_id):
+
+# 마이페이지 글 조회
+@users_bp.route('/mypage', methods=['GET'])
+def get_user_posts():
+    user_id = session.get('user_id')
     try:
         # 내가 작성한 글
         authored_posts = list(current_app.db.posts.find({"user_id": user_id}))
@@ -59,11 +61,9 @@ def get_user_posts(user_id):
         for post in participated_posts:
             post['_id'] = str(post['_id'])
 
-        response = {
-            "authored_posts": authored_posts,
-            "participated_posts": participated_posts
-        }
-
-        return jsonify(response), 200
+        posts = authored_posts + participated_posts
+        return render_template('./pages/mypage.html', posts= posts ,user_id = user_id)
+    
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        logger.debug("Exception Error: %s", e) 
+        return render_template('./pages/mypage.html', error="알 수 없는 에러가 발생했어요. 다시 시도해주세요😿", user_id = session.get('user_id')) 
