@@ -1,13 +1,13 @@
 from flask import Flask, render_template, request, jsonify, current_app
 from pymongo import MongoClient, errors
 from .posts import posts_bp
-from .users.routes import users_bp
+from .users import users_bp
 from .routes import routes_bp
 import os
 
 
 def create_app():
-    app = Flask(__name__, template_folder=os.path.join(os.getcwd(), 'templates')) #cwd - current working directory 현재 작업 절대경로 반환
+    app = Flask(__name__, template_folder=os.path.join(os.getcwd(), 'templates'), static_folder=os.path.join(os.getcwd(), 'static')) #cwd - current working directory 현재 작업 절대경로 반환
     app.config["MONGO_URI"] = "mongodb+srv://kimwatson2026:whsdhkttms2026@gashil.yhejgv0.mongodb.net/?retryWrites=true&w=majority&appName=Gashil"
     app.config["DB_NAME"] = 'gashil'
 

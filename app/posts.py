@@ -1,7 +1,7 @@
 import logging
 from flask import Blueprint, request, jsonify, current_app, redirect, url_for
 from bson.objectid import ObjectId
-from .utils import check_required_fields, check_db_connection
+from .utils import check_required_fields
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
@@ -104,7 +104,6 @@ def delete_post(post_id):
 ## 참여 여부 ##
 
 @posts_bp.route('/posts/<post_id>/participation', methods=['PUT'])
-@check_db_connection
 def participate_post(post_id):
     try:
         data = request.get_json()
@@ -135,7 +134,6 @@ def participate_post(post_id):
         return jsonify({"error": str(e)}), 500
 
 @posts_bp.route('/posts/<post_id>/participation', methods=['DELETE'])
-@check_db_connection
 def cancel(post_id):
     try:
         data = request.get_json()
