@@ -42,7 +42,7 @@ const controlLimitBtn = () => {
     e.preventDefault();
     e.stopPropagation();
     let rides_limit = parseInt(document.getElementById('rides_limit').value);
-    if (rides_limit > 0) {
+    if (rides_limit > 1) {
       limitElm.value = rides_limit - 1;
     }
   });
@@ -54,6 +54,24 @@ const controlLimitBtn = () => {
   });
 };
 
+const validatePostForm = () => {
+  const departure = document.getElementById('departure').value;
+  const destination = document.getElementById('destination').value;
+  const dateTime = document.getElementById('datetimepicker').value;
+  const rides_limit = document.getElementById('rides_limit').value;
+  const updateBtn = document.getElementById('request_post_btn');
+
+  if (!departure || !destination || !dateTime || !rides_limit) {
+    updateBtn.setAttribute('disabled', true);
+    updateBtn.classList.remove('bg-Primary');
+    updateBtn.classList.add('bg-Low');
+  } else {
+    updateBtn.removeAttribute('disabled');
+    updateBtn.classList.remove('bg-Low');
+    updateBtn.classList.add('bg-Primary');
+  }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   flatpickr('#datetimepicker', {
     enableTime: true,
@@ -62,6 +80,14 @@ document.addEventListener('DOMContentLoaded', () => {
     defaultDate: new Date(),
   });
 
-  controlLimitBtn();
   spreadFilters();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  document
+    .getElementById('control_buttons_div')
+    .addEventListener('click', controlLimitBtn);
+  document
+    .getElementById('update_post_form')
+    .addEventListener('input', validatePostForm);
 });
